@@ -47,7 +47,8 @@ public class PlayScreen extends Screen {
 
 	private SystemTextCenter textSprite; // An example text sprite
 	private SystemTextCenter textScore; // An example text sprite
-	private SystemTextCenter comboSprite;
+	private SystemTextCenterFloat powerText;
+	private SystemTextCenter cooldownText;
 	private int count = 0; // A variable to count on the screen
 
 	private Player audio = new Player();
@@ -62,6 +63,7 @@ public class PlayScreen extends Screen {
 
 	private ArrayList<NoteHitSprite> hits = new ArrayList<NoteHitSprite>();
 	private double speedScale;
+	private double origSpeedScale = 0.4;
 
 	SongArray[] songArray;
 
@@ -76,11 +78,11 @@ public class PlayScreen extends Screen {
 
 	public PlayScreen(GameObject gameObject) {
 		super(gameObject);
-		textSprite = new SystemTextCenter(getScreenWidth() / 2 - 200, 100, "Game AI: Easy");
-		textScore = new SystemTextCenter(getScreenWidth() / 2 + 200, 100, "SinglePlayer");
-		comboSprite = new SystemTextCenter(getScreenWidth() /2 + 250, 300, "No power activated");
+		textSprite = new SystemTextCenter(getScreenWidth() / 2 - 200, 105, "Game AI: Easy");
+		textScore = new SystemTextCenter(getScreenWidth() / 2 + 200, 105, "SinglePlayer");
+		cooldownText = new SystemTextCenter(getScreenWidth() / 2, 105, " ");
 		playSprite = new PlaySprite(0, 0, 0, 0, 0.5);
-
+		powerText = new SystemTextCenterFloat(0, 0, " ");
 		this.songFile = getGameObject().getSongFile();
 		getGameObject().setSpeed(0.4);
 		speedScale = getGameObject().getSpeed();
@@ -90,12 +92,7 @@ public class PlayScreen extends Screen {
 	public void keyPressed(int key) {
 		if (key == InputHandler.POWERKEY) {
 			System.out.println("on p");
-			if (power > 50 && cooldown == 0) {
-				cooldown = 600;
-				comboSprite.setText("Power activated! \n Time left: " + (int)(cooldown/60));
-				power-=50;
-				speedScale = getGameObject().getSpeed() - 0.1;
-			}
+			displayPower();
 		} else if (key == InputHandler.MUTEKEY) {
 			System.out.println("Mute pressed");
 		} else {
@@ -117,13 +114,20 @@ public class PlayScreen extends Screen {
 			playSprite.unpush(key);
 		}
 	}
-
-	/*
-	 * @Override
-	 * public void powerKeyPressed(int key) {
-	 * 		System.out.println("on p");
-	 * }
-	 */
+	
+	private void displayPower() {
+		if (power >= 50) {
+			powerText = new SystemTextCenterFloat(getScreenWidth() / 2, 340, "POWER USED!");
+			speedScale = Math.min(speedScale - 0.2, 2);
+			cooldown = 600;
+			cooldownText.setText("Activated Power! \n Time left: " + (int) (cooldown / 60));
+			powerText.shine();
+			power = 0;
+		} else {
+			powerText = new SystemTextCenterFloat(getScreenWidth() / 2, 280, "NOT ENOUGH POWER!");
+			powerText.shine();
+		}
+	}
 
 	public void scoreHelper(int difference) {
 		if (difference <= getGameObject().PERFECT) {
@@ -176,17 +180,17 @@ public class PlayScreen extends Screen {
 		SystemTextCenterShake floatText = new SystemTextCenterShake(getScreenWidth() / 2, 280, "BAD");
 		floatText.shine();
 		floatTexts.add(floatText);
-		textSprite.setText("COMBO: " + combo + "POWER: " + power + "%");
+		textSprite.setText("COMBO: " + combo + " POWER: " + power + "%");
 	}
 
 	@Override
 	public void update() {
 		if (cooldown != 0) {
 			cooldown--;
-			comboSprite.setText("Power activated!\nTime left: " + (int)(cooldown/60));
+			cooldownText.setText("Activated Power! \n Time left: " + (int) (cooldown / 60));
 		} else {
-			speedScale = getGameObject().getSpeed();
-			comboSprite.setText((power >= 50) ? "Power can be used!" : "No power activated!");
+			cooldownText.setText(" ");
+			speedScale = origSpeedScale;
 		}
 		if (audio.getAudioPlayer().playCompleted) {
 			if (!complete) {
@@ -284,8 +288,11 @@ public class PlayScreen extends Screen {
 		textScore.setScreenSize(getScreenWidth(), getScreenHeight());
 		textScore.update();
 		
-		comboSprite.setScreenSize(getScreenWidth(), getScreenHeight());
-		comboSprite.update();
+		powerText.setScreenSize(getScreenWidth(), getScreenHeight());
+		powerText.update();
+
+		cooldownText.setScreenSize(getScreenWidth(), getScreenHeight());
+		cooldownText.update();
 
 		playSprite.setScreenSize(getScreenWidth(), getScreenHeight());
 		playSprite.update();
@@ -325,8 +332,9 @@ public class PlayScreen extends Screen {
 		// This is how you draw the sprites
 		textSprite.draw(context);
 		textScore.draw(context);
-		comboSprite.draw(context);
 		playSprite.draw(context);
+		cooldownText.draw(context);
+		powerText.draw(context);
 
 		for (int i = 0; i < beat.length; i++) {
 			barSprite[i].draw(context);
