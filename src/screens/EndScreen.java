@@ -51,7 +51,7 @@ public class EndScreen extends Screen {
 
 	public EndScreen(GameObject gameObject) {
 		super(gameObject);
-		fx = new SoundHandler();
+		fx = new SoundHandler(gameObject);
 
 		fx.fillEffects(fxlist);
 		// get the player's scores from the game object
@@ -115,7 +115,8 @@ public class EndScreen extends Screen {
 	@Override
 	public void keyPressed(int key) {
 		if (key == InputHandler.MUTEKEY) {
-			System.out.println("Mute pressed");
+			getGameObject().setMute();
+			System.out.println(getGameObject().isMute());
 		}
 	}
 	

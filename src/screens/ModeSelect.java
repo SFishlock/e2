@@ -79,7 +79,8 @@ public class ModeSelect extends Screen {
 			}
 			fx.playEffect("move.wav");
 		} else if (key == InputHandler.MUTEKEY) {
-			System.out.println("Mute pressed");
+			getGameObject().setMute();
+			System.out.println(getGameObject().isMute());
 		}
 	}
 
@@ -93,7 +94,7 @@ public class ModeSelect extends Screen {
 
 	public ModeSelect(GameObject gameObject) {
 		super(gameObject);
-		fx = new SoundHandler();
+		fx = new SoundHandler(gameObject);
 		fx.fillEffects(fxlist);
 
 		textSprite = new SystemText(10, 10, "HELLO");

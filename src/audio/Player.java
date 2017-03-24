@@ -2,8 +2,11 @@ package audio;
 
 import java.io.IOException;
 
+import javax.sound.sampled.BooleanControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import engine.GameObject;
 
 /**
  * A Swing-based audio player program. NOTE: Can play only WAVE (*.wav) file.
@@ -12,23 +15,24 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  */
 public class Player {
 	private AudioPlayer player = new AudioPlayer();
+	private PlayingTimer timer = new PlayingTimer();
 	private Thread playbackThread;
-	private PlayingTimer timer;
 
 	private boolean isPlaying = false;
 	private boolean isPause = false;
+	private GameObject gameObject;
 
 	/**
-	 * Empty constructor
+	 * Constructor
 	 */
-	public Player() {
+	public Player(GameObject gameObject) {
+		this.gameObject = gameObject;
 	}
 
 	/**
 	 * Start playing back the sound.
 	 */
 	public void playBack(final String audioFilePath) {
-		timer = new PlayingTimer();
 		timer.start();
 		isPlaying = true;
 		playbackThread = new Thread(new Runnable() {
@@ -38,6 +42,10 @@ public class Player {
 				try {
 					player.load(audioFilePath);
 					timer.setAudioClip(player.getAudioClip());
+					if(gameObject.isMute()) {
+						BooleanControl control = (BooleanControl) player.getAudioClip().getControl(BooleanControl.Type.MUTE);
+						control.setValue(true);
+					}
 					player.play();
 					stopPlaying();
 				} catch (UnsupportedAudioFileException ex) {

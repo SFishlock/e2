@@ -44,7 +44,8 @@ public class NetworkSelect extends Screen {
 		if (key == InputHandler.PLAYKEY0) {
 			// moveScreen();
 		} else if (key == InputHandler.MUTEKEY) {
-			System.out.println("Mute pressed");
+			getGameObject().setMute();
+			System.out.println(getGameObject().isMute());
 		}
 	}
 

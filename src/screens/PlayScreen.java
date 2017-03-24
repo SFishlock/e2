@@ -51,7 +51,7 @@ public class PlayScreen extends Screen {
 	private SystemTextCenter cooldownText;
 	private int count = 0; // A variable to count on the screen
 
-	private Player audio = new Player();
+	private Player audio = new Player(getGameObject());
 
 	private PlaySprite playSprite;
 
@@ -94,7 +94,8 @@ public class PlayScreen extends Screen {
 			System.out.println("on p");
 			displayPower();
 		} else if (key == InputHandler.MUTEKEY) {
-			System.out.println("Mute pressed");
+			getGameObject().setMute();
+			System.out.println(getGameObject().isMute());
 		} else {
 			keys[key] = true;
 			System.out.println("on" + key);
@@ -185,6 +186,11 @@ public class PlayScreen extends Screen {
 
 	@Override
 	public void update() {
+		
+		if(getGameObject().isMute()) {
+			audio.getAudioPlayer().stop();
+		}
+		
 		if (cooldown != 0) {
 			cooldown--;
 			cooldownText.setText("Activated Power! \n Time left: " + (int) (cooldown / 60));

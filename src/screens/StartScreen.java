@@ -27,7 +27,8 @@ public class StartScreen extends Screen {
 			getGameObject().getOverlay().getMiddleBottom().setText(" ");
 			moveScreen();
 		} else if (key == InputHandler.MUTEKEY) {
-			System.out.println("Mute pressed");
+			getGameObject().setMute();
+			System.out.println(getGameObject().isMute());
 		}
 	}
 	

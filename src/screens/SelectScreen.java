@@ -42,7 +42,7 @@ public class SelectScreen extends Screen {
 	String[] fxlist = { "bang.wav", "move.wav" };
 	private int count = 0;
 
-	private Player audio = new Player();
+	private Player audio = new Player(getGameObject());
 
 	private SongFileProcessor reader = new SongFileProcessor();
 
@@ -80,7 +80,8 @@ public class SelectScreen extends Screen {
 			}
 			pageUpdate();
 		} else if (key == InputHandler.MUTEKEY) {
-			System.out.println("Mute pressed");
+			getGameObject().setMute();
+			System.out.println(getGameObject().isMute());
 		}
 	}
 	
@@ -93,7 +94,7 @@ public class SelectScreen extends Screen {
 
 	public SelectScreen(GameObject gameObject) {
 		super(gameObject);
-		fx = new SoundHandler();
+		fx = new SoundHandler(getGameObject());
 
 		fx.fillEffects(fxlist);
 
@@ -166,6 +167,9 @@ public class SelectScreen extends Screen {
 
 	@Override
 	public void update() {
+		if(getGameObject().isMute()) {
+			fx.stopAll();
+		}
 		typeText.setScreenSize(getScreenWidth(), getScreenHeight());
 		levelText.setScreenSize(getScreenWidth(), getScreenHeight());
 		numberText.setScreenSize(getScreenWidth(), getScreenHeight());

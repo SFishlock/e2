@@ -45,6 +45,7 @@ public class GameObject {
 
 	private int[] scoreQuality;
 	private double speed;
+	private boolean isMute;
 
 	private int aiLevel;
 	private String aiLevelText;
@@ -60,6 +61,7 @@ public class GameObject {
 	public GameObject(int width, int height) {
 		this.width = width;
 		this.height = height;
+		isMute = false;
 		songFiles = songmanager.SongFileProcessor.readAllSongFiles();
 	}
 
@@ -576,5 +578,20 @@ public class GameObject {
 	public int getCurrentSelect() {
 		return this.currentSelect;
 	}
-
+	
+	/**
+	 * Gets the mute status
+	 *	
+	 * @return The mute status
+	 */
+	public boolean isMute() {
+		return isMute;
+	}
+	
+	/**
+	 * Toggles mute status
+	 */
+	public void setMute() {
+		isMute ^= true;
+	}
 }

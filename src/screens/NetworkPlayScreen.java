@@ -48,7 +48,7 @@ public class NetworkPlayScreen extends Screen {
 	private SystemTextCenter player2Text;
 	private SystemTextCenterFloat powerText;
 	
-	private Player audio = new Player();
+	private Player audio = new Player(getGameObject());
 	private SongFile songFile;
 	private boolean complete = false;
 	
@@ -104,7 +104,8 @@ public class NetworkPlayScreen extends Screen {
 			System.out.println("on p");
 			displayPowerOppo(key);
 		} else if (key == InputHandler.MUTEKEY) {
-			System.out.println("Mute pressed");
+			getGameObject().setMute();
+			System.out.println(getGameObject().isMute());
 		} else {
 			keys[key] = true;
 			System.out.println("on" + key);
@@ -263,6 +264,10 @@ public class NetworkPlayScreen extends Screen {
 	
 	@Override
 	public void update() {
+		
+		if(getGameObject().isMute()) {
+			audio.getAudioPlayer().stop();
+		}
 		
 		int lineY = (int) Math.round(getScreenHeight() * 0.8);
 		

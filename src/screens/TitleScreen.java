@@ -64,7 +64,8 @@ public class TitleScreen extends Screen {
 			fx.playEffect("bang.wav");
 			moveScreen();
 		} else if (key == InputHandler.MUTEKEY) {
-			System.out.println("Mute pressed");
+			getGameObject().setMute();
+			System.out.println(getGameObject().isMute());
 		}
 	}
 	
@@ -79,7 +80,7 @@ public class TitleScreen extends Screen {
 	
 	public TitleScreen(GameObject gameObject) {
 		super(gameObject);
-		fx = new SoundHandler();
+		fx = new SoundHandler(gameObject);
 		
 		fx.fillEffects(fxlist);
 		
@@ -154,6 +155,9 @@ public class TitleScreen extends Screen {
 
 	@Override
 	public void update() {
+		if(getGameObject().isMute()) {
+			fx.stopAll();
+		}
 
 		if(count == -190) {
 			fx.playEffect("titleshort.wav");

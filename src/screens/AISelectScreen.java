@@ -52,7 +52,8 @@ public class AISelectScreen extends Screen {
 			}
 			fx.playEffect("move.wav");
 		} else if (key == InputHandler.MUTEKEY) {
-			System.out.println("Mute unpressed");
+			getGameObject().setMute();
+			System.out.println(getGameObject().isMute());
 		}
 	}
 
@@ -64,7 +65,7 @@ public class AISelectScreen extends Screen {
 	public AISelectScreen(GameObject gameObject) {
 		super(gameObject);
 		setNextScreen(new AIPlayScreen(gameObject));
-		fx = new SoundHandler();
+		fx = new SoundHandler(gameObject);
 		fx.fillEffects(fxlist);
 
 		aiTextSprite = new SystemTextCenterFloat((int) (getScreenWidth() * 0.5), (int) (getScreenHeight() * 0.5) - 50, "AI LEVEL");
@@ -81,6 +82,9 @@ public class AISelectScreen extends Screen {
 
 	@Override
 	public void update() {
+		if(getGameObject().isMute()) {
+			fx.stopAll();
+		}
 		levelTextSprite.setText("" + level);
 		levelTextSprite.setScreenSize(getScreenWidth(), getScreenHeight());
 		levelTextSprite.update();

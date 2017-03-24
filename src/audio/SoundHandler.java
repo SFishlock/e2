@@ -10,6 +10,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 
+import engine.GameObject;
+
 /**
  * Non-blocking class for playing small audio effects
  * 
@@ -20,13 +22,15 @@ public class SoundHandler {
 
 	HashMap<String, AudioInputStream> effects;
 	HashMap<String, AudioFormat> formats;
+	private GameObject gameObject;
 
 	static ArrayList<Clip> clips = new ArrayList<Clip>();
 
 	/**
 	 * Constructor for new sound handler
 	 */
-	public SoundHandler() {
+	public SoundHandler(GameObject gameObject) {
+		this.gameObject = gameObject;
 		effects = new HashMap<String, AudioInputStream>();
 		formats = new HashMap<String, AudioFormat>();
 		// clips = new ArrayList<Clip>();
@@ -74,19 +78,23 @@ public class SoundHandler {
 	 *            Set to true if effect should be looped
 	 */
 	public void playEffect(String effect, boolean loop) {
-		try {
-			DataLine.Info info = new DataLine.Info(Clip.class, formats.get(effect));
-			Clip clip = (Clip) AudioSystem.getLine(info);
-			// Clip clip = AudioSystem.getClip();
-			clip.open(effects.get(effect));
-			if (loop)
-				clip.loop(Clip.LOOP_CONTINUOUSLY);
-			else
-				clip.start();
-			clips.add(clip);
-			effects.put(effect, AudioSystem.getAudioInputStream(new File("src/res/audio/" + effect)));
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (!gameObject.isMute()) {
+			try {
+				DataLine.Info info = new DataLine.Info(Clip.class, formats.get(effect));
+				Clip clip = (Clip) AudioSystem.getLine(info);
+				// Clip clip = AudioSystem.getClip();
+				clip.open(effects.get(effect));
+				if (loop)
+					clip.loop(Clip.LOOP_CONTINUOUSLY);
+				else
+					clip.start();
+				clips.add(clip);
+				effects.put(effect, AudioSystem.getAudioInputStream(new File("src/res/audio/" + effect)));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			stopAll();
 		}
 	}
 

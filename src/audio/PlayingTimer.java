@@ -24,15 +24,18 @@ public class PlayingTimer extends Thread {
 	private long startTime;
 	private long pauseTime;
 	private Clip audioClip;
+	private boolean isComplete = false;
 
 	/**
 	 * Empty constructor
 	 */
 	public PlayingTimer() {
+		isComplete = false;
 	}
 
 	public void run() {
 		isRunning = true;
+		isComplete = false;
 
 		startTime = System.currentTimeMillis();
 
@@ -48,6 +51,7 @@ public class PlayingTimer extends Thread {
 				break;
 			}
 		}
+		isComplete = true;
 	}
 
 	/**
@@ -111,5 +115,14 @@ public class PlayingTimer extends Thread {
 	 */
 	public void setAudioClip(Clip audioClip) {
 		this.audioClip = audioClip;
+	}
+
+	/**
+	 * Gets whether the song is complete
+	 * 
+	 * @return The state of the songs completeness
+	 */
+	public boolean isComplete() {
+		return isComplete;
 	}
 }

@@ -47,7 +47,7 @@ public class AIPlayScreen extends Screen {
 	private SystemTextCenter player1Text;
 	private SystemTextCenter player2Text;
 
-	private Player audio = new Player();
+	private Player audio = new Player(getGameObject());
 
 	private PlaySprite playSpriteLeft;
 	private PlaySprite playSpriteRight;
@@ -91,7 +91,8 @@ public class AIPlayScreen extends Screen {
 			System.out.println("on p");
 			displayPowerPlayer();
 		} else if (key == InputHandler.MUTEKEY) {
-			System.out.println("Mute");
+			getGameObject().setMute();
+			System.out.println(getGameObject().isMute());
 		} else {
 			keys[key] = true;
 			System.out.println("on" + key);
@@ -104,7 +105,8 @@ public class AIPlayScreen extends Screen {
 		if (key == InputHandler.POWERKEY) {
 			System.out.println("off p");
 		} else if (key == InputHandler.MUTEKEY) {
-			System.out.println("Mute unpressed");
+			getGameObject().setMute();
+			System.out.println(getGameObject().isMute());
 		} else {
 			keys[key] = false;
 			System.out.println("off" + key);
@@ -260,6 +262,10 @@ public class AIPlayScreen extends Screen {
 
 	@Override
 	public void update() {
+		
+		if(getGameObject().isMute()) {
+			audio.getAudioPlayer().stop();
+		}
 
 		int lineY = (int) Math.round(getScreenHeight() * 0.8);
 
